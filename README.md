@@ -9,6 +9,7 @@ Una web application completa per la gestione degli utenti con integrazione meteo
 - **Meteo in Tempo Reale**: Visualizzazione del meteo attuale basato sulla località dell'utente
 - **Notifiche Allerta**: Sistema di notifiche in-app per condizioni meteo pericolose
 - **Aggiornamenti Automatici**: I dati meteo si aggiornano automaticamente ogni 5 minuti
+- **API di Test**: Endpoint per simulare allerte meteo durante sviluppo (vedi [TESTING_ALERTS.md](TESTING_ALERTS.md))
 - **UI Moderna**: Interfaccia utente responsive e moderna con Tailwind CSS
 
 ## 🛠️ Tecnologie Utilizzate
@@ -114,6 +115,54 @@ L'applicazione sarà disponibile su `http://localhost:3000`
 2. Modifica i tuoi dati personali
 3. Clicca su "Salva Modifiche"
 4. Puoi anche eliminare il tuo account (azione irreversibile)
+
+### Test Allerte Meteo 🧪
+
+I test delle allerte sono disponibili tramite API per sviluppatori.
+
+#### Test con Postman
+
+**Step 1: Ottieni il Token**
+1. Crea richiesta POST: `http://localhost:5000/api/auth/login`
+2. Body (raw JSON):
+   ```json
+   {
+     "email": "tua@email.com",
+     "password": "tuapassword"
+   }
+   ```
+3. Copia il `token` dalla risposta
+
+**Step 2: Testa un'Allerta**
+1. Crea richiesta GET: `http://localhost:5000/api/weather/test-alert/storm`
+2. Headers: `Authorization: Bearer IL_TUO_TOKEN`
+3. Invia e osserva la risposta con l'allerta simulata
+
+**Tipi disponibili**: `cold`, `hot`, `wind`, `storm`, `snow`, `fog`, `multiple`
+
+#### Test con cURL
+
+```bash
+# Sostituisci YOUR_TOKEN con il tuo JWT
+curl -X GET http://localhost:5000/api/weather/test-alert/storm \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+#### Test con Browser Console
+
+```javascript
+// Nella console del browser (F12) dopo il login
+const token = localStorage.getItem('token');
+fetch('http://localhost:5000/api/weather/test-alert/storm', {
+  headers: { 'Authorization': `Bearer ${token}` }
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+⚠️ **Importante**: Assicurati che il backend sia in esecuzione su porta 5000!
+
+**Documentazione completa**: [TESTING_ALERTS.md](TESTING_ALERTS.md)
 
 ## 🌦️ Sistema di Allerta Meteo
 

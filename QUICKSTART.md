@@ -46,12 +46,31 @@ Puoi usare qualsiasi città del mondo. Esempi:
 - ✅ Dashboard con meteo in tempo reale
 - ✅ Notifiche allerta meteo automatiche
 - ✅ Aggiornamento automatico ogni 5 minuti
+- ✅ **Sistema di test per allerte** (nuovo! 🧪)
 - ✅ Gestione profilo utente
 - ✅ UI moderna e responsive
 
 ## 🔑 Credenziali di Test
 
 Dopo la registrazione, usa le tue credenziali per accedere.
+
+## 🧪 Testare le Notifiche (Sviluppatori)
+
+I test delle allerte sono disponibili tramite API:
+
+```bash
+# Nella console del browser (dopo il login)
+const token = localStorage.getItem('token');
+fetch('/api/weather/test-alert/storm', {
+  headers: { 'Authorization': `Bearer ${token}` }
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+**Tipi**: `cold`, `hot`, `wind`, `storm`, `snow`, `fog`, `multiple`
+
+📖 **Guida completa**: [TESTING_ALERTS.md](TESTING_ALERTS.md)
 
 ## 🆘 Problemi Comuni
 

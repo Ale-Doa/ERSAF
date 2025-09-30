@@ -34,6 +34,29 @@ router.get('/city/:city', authenticateToken, async (req, res) => {
   }
 });
 
+// Endpoint di test per simulare allerte meteo
+router.get('/test-alert/:type', authenticateToken, async (req, res) => {
+  try {
+    const { type } = req.params;
+    const user = await findUserById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Utente non trovato' });
+    }
+
+    // Ottieni dati meteo reali
+    const realWeatherData = await getWeatherData(user.luogoResidenza);
+    
+    // Simula allerta in base al tipo
+    const testData = generateTestAlert(type, realWeatherData);
+    
+    res.json(testData);
+  } catch (error) {
+    console.error('Errore nel test allerta:', error);
+    res.status(500).json({ error: 'Errore nel test allerta' });
+  }
+});
+
 // Funzione helper per ottenere dati meteo
 async function getWeatherData(city) {
   try {
@@ -113,6 +136,74 @@ function getAlertMessage(data) {
   });
 
   return alerts.join(' | ');
+}
+
+// Funzione per generare allerte di test
+function generateTestAlert(type, realData) {
+  const testData = { ...realData };
+  
+  switch (type) {
+    case 'cold':
+      testData.temperature = -5;
+      testData.feelsLike = -8;
+      testData.hasAlert = true;
+      testData.alertMessage = '⚠️ Temperatura sotto zero - Rischio ghiaccio';
+      testData.description = 'cielo sereno (TEST)';
+      break;
+      
+    case 'hot':
+      testData.temperature = 38;
+      testData.feelsLike = 42;
+      testData.hasAlert = true;
+      testData.alertMessage = '⚠️ Temperatura molto elevata - Evitare esposizione prolungata';
+      testData.description = 'cielo sereno (TEST)';
+      break;
+      
+    case 'wind':
+      testData.windSpeed = 18.5;
+      testData.hasAlert = true;
+      testData.alertMessage = '💨 Vento forte - Prestare attenzione';
+      testData.description = 'vento forte (TEST)';
+      break;
+      
+    case 'storm':
+      testData.hasAlert = true;
+      testData.alertMessage = '⛈️ Temporale in corso - Cercare riparo';
+      testData.description = 'temporale (TEST)';
+      testData.icon = '11d';
+      break;
+      
+    case 'snow':
+      testData.temperature = -2;
+      testData.hasAlert = true;
+      testData.alertMessage = '🌨️ Nevicate - Prestare attenzione alla viabilità';
+      testData.description = 'neve (TEST)';
+      testData.icon = '13d';
+      break;
+      
+    case 'fog':
+      testData.hasAlert = true;
+      testData.alertMessage = '🌫️ Nebbia - Ridotta visibilità';
+      testData.description = 'nebbia (TEST)';
+      testData.icon = '50d';
+      break;
+      
+    case 'multiple':
+      testData.temperature = -3;
+      testData.windSpeed = 16;
+      testData.hasAlert = true;
+      testData.alertMessage = '⚠️ Temperatura sotto zero - Rischio ghiaccio | 💨 Vento forte - Prestare attenzione | 🌨️ Nevicate - Prestare attenzione alla viabilità';
+      testData.description = 'condizioni estreme (TEST)';
+      testData.icon = '13d';
+      break;
+      
+    default:
+      testData.hasAlert = true;
+      testData.alertMessage = '🧪 Allerta di test generica';
+      testData.description = 'test generico (TEST)';
+  }
+  
+  return testData;
 }
 
 export default router;
