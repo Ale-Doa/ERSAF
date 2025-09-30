@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import { User, Mail, Calendar, MapPin, Save, Trash2 } from 'lucide-react';
 
 const Profile = () => {
-  const { user, updateProfile, logout } = useAuth();
+  const { user, updateProfile, deleteAccount } = useAuth();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -16,6 +16,7 @@ const Profile = () => {
   });
   
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -46,9 +47,18 @@ const Profile = () => {
   };
 
   const handleDeleteAccount = async () => {
-    // In una vera applicazione, qui chiameresti l'API per eliminare l'account
-    logout();
-    navigate('/login');
+    setDeleteLoading(true);
+    setError('');
+    
+    const result = await deleteAccount();
+    
+    if (result.success) {
+      navigate('/login');
+    } else {
+      setError(result.error);
+      setDeleteLoading(false);
+      setShowDeleteConfirm(false);
+    }
   };
 
   return (
@@ -221,14 +231,16 @@ const Profile = () => {
               <div className="flex space-x-4">
                 <button
                   onClick={handleDeleteAccount}
-                  className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                  disabled={deleteLoading}
+                  className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Trash2 className="h-5 w-5" />
-                  <span>Sì, Elimina</span>
+                  <span>{deleteLoading ? 'Eliminazione...' : 'Sì, Elimina'}</span>
                 </button>
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                  disabled={deleteLoading}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Annulla
                 </button>

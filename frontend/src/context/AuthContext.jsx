@@ -95,6 +95,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      await axios.delete('/api/users/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      logout();
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Errore durante l\'eliminazione'
+      };
+    }
+  };
+
   const value = {
     user,
     token,
@@ -102,7 +117,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    updateProfile
+    updateProfile,
+    deleteAccount
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
