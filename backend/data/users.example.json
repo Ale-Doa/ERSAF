@@ -1,0 +1,12 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "nome": "Mario",
+    "cognome": "Rossi",
+    "eta": 30,
+    "email": "mario@example.com",
+    "password": "$2a$10$example_hashed_password",
+    "luogoResidenza": "Milano",
+    "createdAt": "2025-09-30T15:00:00.000Z"
+  }
+]
