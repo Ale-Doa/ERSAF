@@ -45,14 +45,26 @@ Puoi usare qualsiasi città del mondo. Esempi:
 - ✅ Registrazione e Login
 - ✅ Dashboard con meteo in tempo reale
 - ✅ Notifiche allerta meteo automatiche
+- ✅ **Preferenze allerte personalizzabili** (nuovo! ⚙️)
 - ✅ Aggiornamento automatico ogni 5 minuti
-- ✅ **Sistema di test per allerte** (nuovo! 🧪)
+- ✅ **Sistema di test per allerte** (API dev 🧪)
 - ✅ Gestione profilo utente
 - ✅ UI moderna e responsive
 
 ## 🔑 Credenziali di Test
 
 Dopo la registrazione, usa le tue credenziali per accedere.
+
+## ⚙️ Personalizza le Allerte
+
+1. **Vai su "Allerte"** nella navbar
+2. **Configura le soglie**:
+   - Temperatura minima/massima
+   - Velocità vento
+   - Abilita/disabilita temporali, neve, nebbia
+3. **Salva** e ricevi allerte personalizzate!
+
+**Esempio**: Vivi in Sicilia? Imposta temp. max a 40°C e disabilita la neve!
 
 ## 🧪 Testare le Notifiche (Sviluppatori)
 

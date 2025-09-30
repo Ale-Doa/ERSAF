@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
     // Hash della password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crea nuovo utente
+    // Crea nuovo utente con preferenze default
     const newUser = {
       id: uuidv4(),
       nome,
@@ -34,6 +34,14 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       luogoResidenza,
+      alertPreferences: {
+        temperatureMin: 0,      // °C - Soglia freddo
+        temperatureMax: 35,     // °C - Soglia caldo
+        windSpeed: 50,          // km/h - Soglia vento
+        enableThunderstorm: true,
+        enableSnow: true,
+        enableFog: true
+      },
       createdAt: new Date().toISOString()
     };
 

@@ -14,7 +14,7 @@ router.get('/current', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Utente non trovato' });
     }
 
-    const weatherData = await getWeatherData(user.luogoResidenza);
+    const weatherData = await getWeatherData(user.luogoResidenza, user.alertPreferences);
     res.json(weatherData);
   } catch (error) {
     console.error('Errore nel recupero dei dati meteo:', error);
@@ -58,7 +58,7 @@ router.get('/test-alert/:type', authenticateToken, async (req, res) => {
 });
 
 // Funzione helper per ottenere dati meteo
-async function getWeatherData(city) {
+async function getWeatherData(city, userPreferences = null) {
   try {
     const apiKey = process.env.OPENWEATHER_API_KEY;
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=it`;
@@ -66,8 +66,8 @@ async function getWeatherData(city) {
     const response = await axios.get(url);
     const data = response.data;
 
-    // Determina se c'è un'allerta meteo
-    const hasAlert = checkWeatherAlert(data);
+    // Determina se c'è un'allerta meteo basata sulle preferenze utente
+    const hasAlert = checkWeatherAlert(data, userPreferences);
 
     return {
       city: data.name,
@@ -81,7 +81,7 @@ async function getWeatherData(city) {
       windSpeed: data.wind.speed,
       clouds: data.clouds.all,
       hasAlert,
-      alertMessage: hasAlert ? getAlertMessage(data) : null,
+      alertMessage: hasAlert ? getAlertMessage(data, userPreferences) : null,
       timestamp: new Date().toISOString()
     };
   } catch (error) {
@@ -92,45 +92,70 @@ async function getWeatherData(city) {
   }
 }
 
-// Funzione per verificare condizioni di allerta
-function checkWeatherAlert(data) {
+// Funzione per verificare condizioni di allerta con preferenze personalizzate
+function checkWeatherAlert(data, userPreferences = null) {
   const { main, weather, wind } = data;
   
-  // Condizioni di allerta:
-  // - Temperatura estrema (< 0°C o > 35°C)
-  // - Vento forte (> 50 km/h = 13.89 m/s)
-  // - Condizioni meteo pericolose (temporale, neve intensa, nebbia)
+  // Preferenze default se non specificate
+  const prefs = userPreferences || {
+    temperatureMin: 0,
+    temperatureMax: 35,
+    windSpeed: 50,
+    enableThunderstorm: true,
+    enableSnow: true,
+    enableFog: true
+  };
   
-  const extremeTemp = main.temp < 0 || main.temp > 35;
-  const strongWind = wind.speed > 13.89;
-  const dangerousConditions = weather.some(w => 
-    ['Thunderstorm', 'Snow', 'Mist', 'Fog'].includes(w.main)
-  );
+  // Controlla temperatura (converti windSpeed da km/h a m/s: km/h / 3.6)
+  const coldAlert = main.temp < prefs.temperatureMin;
+  const hotAlert = main.temp > prefs.temperatureMax;
+  const windAlert = wind.speed > (prefs.windSpeed / 3.6);
+  
+  // Controlla condizioni meteo pericolose (solo se abilitate)
+  const thunderstormAlert = prefs.enableThunderstorm && weather.some(w => w.main === 'Thunderstorm');
+  const snowAlert = prefs.enableSnow && weather.some(w => w.main === 'Snow');
+  const fogAlert = prefs.enableFog && weather.some(w => ['Mist', 'Fog'].includes(w.main));
 
-  return extremeTemp || strongWind || dangerousConditions;
+  return coldAlert || hotAlert || windAlert || thunderstormAlert || snowAlert || fogAlert;
 }
 
-// Funzione per generare messaggio di allerta
-function getAlertMessage(data) {
+// Funzione per generare messaggio di allerta con preferenze personalizzate
+function getAlertMessage(data, userPreferences = null) {
   const { main, weather, wind } = data;
   const alerts = [];
 
-  if (main.temp < 0) {
-    alerts.push('⚠️ Temperatura sotto zero - Rischio ghiaccio');
-  } else if (main.temp > 35) {
-    alerts.push('⚠️ Temperatura molto elevata - Evitare esposizione prolungata');
+  // Preferenze default se non specificate
+  const prefs = userPreferences || {
+    temperatureMin: 0,
+    temperatureMax: 35,
+    windSpeed: 50,
+    enableThunderstorm: true,
+    enableSnow: true,
+    enableFog: true
+  };
+
+  // Allerta freddo
+  if (main.temp < prefs.temperatureMin) {
+    alerts.push(`⚠️ Temperatura sotto ${prefs.temperatureMin}°C - Rischio ghiaccio`);
+  }
+  
+  // Allerta caldo
+  if (main.temp > prefs.temperatureMax) {
+    alerts.push(`⚠️ Temperatura sopra ${prefs.temperatureMax}°C - Evitare esposizione prolungata`);
   }
 
-  if (wind.speed > 13.89) {
-    alerts.push('💨 Vento forte - Prestare attenzione');
+  // Allerta vento (converti da m/s a km/h per il messaggio)
+  if (wind.speed > (prefs.windSpeed / 3.6)) {
+    alerts.push(`💨 Vento oltre ${prefs.windSpeed} km/h - Prestare attenzione`);
   }
 
+  // Allerte condizioni meteo (solo se abilitate)
   weather.forEach(w => {
-    if (w.main === 'Thunderstorm') {
+    if (w.main === 'Thunderstorm' && prefs.enableThunderstorm) {
       alerts.push('⛈️ Temporale in corso - Cercare riparo');
-    } else if (w.main === 'Snow') {
+    } else if (w.main === 'Snow' && prefs.enableSnow) {
       alerts.push('🌨️ Nevicate - Prestare attenzione alla viabilità');
-    } else if (w.main === 'Mist' || w.main === 'Fog') {
+    } else if ((w.main === 'Mist' || w.main === 'Fog') && prefs.enableFog) {
       alerts.push('🌫️ Nebbia - Ridotta visibilità');
     }
   });

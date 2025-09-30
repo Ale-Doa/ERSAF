@@ -8,6 +8,7 @@ Una web application completa per la gestione degli utenti con integrazione meteo
 - **Gestione Profilo**: Modifica delle informazioni personali (nome, cognome, età, email, luogo di residenza)
 - **Meteo in Tempo Reale**: Visualizzazione del meteo attuale basato sulla località dell'utente
 - **Notifiche Allerta**: Sistema di notifiche in-app per condizioni meteo pericolose
+- **Preferenze Personalizzabili**: Ogni utente può configurare le proprie soglie di allerta
 - **Aggiornamenti Automatici**: I dati meteo si aggiornano automaticamente ogni 5 minuti
 - **API di Test**: Endpoint per simulare allerte meteo durante sviluppo (vedi [TESTING_ALERTS.md](TESTING_ALERTS.md))
 - **UI Moderna**: Interfaccia utente responsive e moderna con Tailwind CSS
@@ -116,6 +117,18 @@ L'applicazione sarà disponibile su `http://localhost:3000`
 3. Clicca su "Salva Modifiche"
 4. Puoi anche eliminare il tuo account (azione irreversibile)
 
+### Personalizza Allerte ⚙️
+1. Clicca su "Allerte" nella navbar
+2. Configura le tue preferenze:
+   - **Temperatura Minima**: Soglia per allerta freddo (es: -5°C)
+   - **Temperatura Massima**: Soglia per allerta caldo (es: 40°C)
+   - **Velocità Vento**: Soglia per allerta vento (es: 70 km/h)
+   - **Condizioni Meteo**: Abilita/disabilita allerte per temporali, neve, nebbia
+3. Clicca su "Salva Preferenze"
+4. Le allerte verranno generate in base alle tue impostazioni
+
+**Esempio**: Se imposti temperatura minima a 5°C, riceverai allerta solo quando la temperatura scende sotto 5°C (non più 0°C).
+
 ### Test Allerte Meteo 🧪
 
 I test delle allerte sono disponibili tramite API per sviluppatori.
@@ -166,16 +179,29 @@ fetch('http://localhost:5000/api/weather/test-alert/storm', {
 
 ## 🌦️ Sistema di Allerta Meteo
 
-L'applicazione monitora le seguenti condizioni e genera allerte:
+### Soglie Default
 
-- **Temperatura Estrema**: < 0°C o > 35°C
+L'applicazione monitora le seguenti condizioni (personalizzabili da ogni utente):
+
+- **Temperatura Minima**: < 0°C
+- **Temperatura Massima**: > 35°C
 - **Vento Forte**: > 50 km/h
-- **Condizioni Pericolose**: Temporali, neve intensa, nebbia
+- **Condizioni Pericolose**: Temporali, neve, nebbia (abilitate di default)
+
+### Personalizzazione
+
+Ogni utente può configurare le proprie soglie nella pagina **Impostazioni Allerte**:
+- Modifica temperature min/max in base al proprio clima
+- Regola la soglia del vento
+- Disabilita condizioni meteo non rilevanti (es: neve in zone calde)
+
+### Notifiche
 
 Quando viene rilevata un'allerta:
 - Appare una notifica toast in alto a destra
-- La card meteo mostra un banner rosso con i dettagli
+- La card meteo mostra un banner rosso con i dettagli personalizzati
 - La notifica rimane visibile per 10 secondi
+- Il messaggio include la soglia configurata (es: "Temperatura sotto 5°C")
 
 ## 📁 Struttura del Progetto
 
@@ -209,7 +235,8 @@ ERSAF/
 │   │   │   ├── Login.jsx
 │   │   │   ├── Register.jsx
 │   │   │   ├── Dashboard.jsx
-│   │   │   └── Profile.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   └── AlertSettings.jsx
 │   │   ├── App.jsx
 │   │   ├── main.jsx
 │   │   └── index.css
@@ -232,10 +259,13 @@ ERSAF/
 - `GET /api/users/profile` - Ottieni profilo utente
 - `PUT /api/users/profile` - Aggiorna profilo utente
 - `DELETE /api/users/profile` - Elimina account
+- `GET /api/users/alert-preferences` - Ottieni preferenze allerte
+- `PUT /api/users/alert-preferences` - Aggiorna preferenze allerte
 
 ### Meteo (richiede autenticazione)
-- `GET /api/weather/current` - Meteo per località utente
+- `GET /api/weather/current` - Meteo per località utente (con preferenze personalizzate)
 - `GET /api/weather/city/:city` - Meteo per città specifica
+- `GET /api/weather/test-alert/:type` - Simula allerta per test (dev only)
 
 ## 🔒 Sicurezza
 

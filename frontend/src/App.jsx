@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import AlertSettings from './pages/AlertSettings';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -52,6 +53,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/alert-settings"
+              element={
+                <ProtectedRoute>
+                  <AlertSettings />
                 </ProtectedRoute>
               }
             />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Cloud, User, LogOut } from 'lucide-react';
+import { Cloud, User, LogOut, Settings } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -27,6 +27,14 @@ const Navbar = () => {
             <span className="text-gray-700">
               Ciao, <span className="font-semibold">{user?.nome}</span>
             </span>
+            
+            <Link
+              to="/alert-settings"
+              className="flex items-center space-x-1 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 transition"
+            >
+              <Settings className="h-5 w-5" />
+              <span>Allerte</span>
+            </Link>
             
             <Link
               to="/profile"
