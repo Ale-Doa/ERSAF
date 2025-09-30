@@ -59,7 +59,7 @@ Il file `.env` è già configurato con:
 ```
 PORT=5000
 JWT_SECRET=your_jwt_secret_key_change_in_production
-OPENWEATHER_API_KEY=21d284eec703e073efcac0647c11a509
+OPENWEATHER_API_KEY="VOSTRA_CHIAVE_API"
 ```
 
 **IMPORTANTE**: In produzione, cambia il `JWT_SECRET` con una chiave sicura!

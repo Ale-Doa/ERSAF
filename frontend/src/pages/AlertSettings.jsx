@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import PushNotificationToggle from '../components/PushNotificationToggle';
 import { Settings, Save, RotateCcw, Thermometer, Wind, Cloud } from 'lucide-react';
 
 const AlertSettings = () => {
@@ -105,6 +106,9 @@ const AlertSettings = () => {
             Personalizza quando ricevere le notifiche meteo
           </p>
         </div>
+
+        {/* Notifiche Push */}
+        <PushNotificationToggle />
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {success && (

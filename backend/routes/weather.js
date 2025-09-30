@@ -2,6 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import { authenticateToken } from '../middleware/auth.js';
 import { findUserById } from '../utils/fileManager.js';
+import { sendPushNotification } from './push.js';
 
 const router = express.Router();
 
@@ -15,6 +16,17 @@ router.get('/current', authenticateToken, async (req, res) => {
     }
 
     const weatherData = await getWeatherData(user.luogoResidenza, user.alertPreferences);
+    
+    // Invia notifica push se c'è un'allerta
+    if (weatherData.hasAlert && user.pushSubscription) {
+      await sendPushNotification(
+        user,
+        '⚠️ Allerta Meteo',
+        weatherData.alertMessage,
+        { city: weatherData.city }
+      );
+    }
+    
     res.json(weatherData);
   } catch (error) {
     console.error('Errore nel recupero dei dati meteo:', error);
