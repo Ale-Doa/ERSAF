@@ -29,7 +29,7 @@ Una web application completa per la gestione degli utenti con integrazione meteo
 - **File JSON** per la persistenza dei dati
 
 ### Frontend
-- **React 18** (ultima versione)
+- **React 18** 
 - **React Router** per la navigazione
 - **Tailwind CSS** per lo styling responsive
 - **Lucide React** per le icone
