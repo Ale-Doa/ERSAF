@@ -1,3 +1,4 @@
+import '../config/env.js';
 import express from 'express';
 import webpush from 'web-push';
 import { authenticateToken } from '../middleware/auth.js';

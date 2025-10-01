@@ -1,10 +1,8 @@
+// IMPORTANTE: Carica le variabili d'ambiente per primo
+import './config/env.js';
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-
-// Carica le variabili d'ambiente PRIMA di importare i routes
-dotenv.config();
-
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import weatherRoutes from './routes/weather.js';
