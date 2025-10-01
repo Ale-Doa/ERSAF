@@ -1,5 +1,6 @@
-import React from 'react';
-import { Cloud, Droplets, Wind, Gauge, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Cloud, Droplets, Wind, Gauge, AlertTriangle, Clock } from 'lucide-react';
+import TemperatureChart from './TemperatureChart';
 
 const WeatherCard = ({ weather }) => {
   if (!weather) {
@@ -75,6 +76,11 @@ const WeatherCard = ({ weather }) => {
           <p className="text-2xl font-bold">{weather.clouds}%</p>
         </div>
       </div>
+
+      {/* Grafico Temperatura */}
+      {weather.hourlyForecast && weather.hourlyForecast.length > 0 && (
+        <TemperatureChart hourlyForecast={weather.hourlyForecast} />
+      )}
 
       {/* Timestamp */}
       <div className="mt-6 text-center text-sm opacity-75">

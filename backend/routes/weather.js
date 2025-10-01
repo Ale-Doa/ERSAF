@@ -73,10 +73,64 @@ router.get('/test-alert/:type', authenticateToken, async (req, res) => {
 async function getWeatherData(city, userPreferences = null) {
   try {
     const apiKey = process.env.OPENWEATHER_API_KEY;
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=it`;
     
-    const response = await axios.get(url);
-    const data = response.data;
+    // Ottieni dati meteo attuali
+    const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=it`;
+    const currentResponse = await axios.get(currentUrl);
+    const data = currentResponse.data;
+
+    // Ottieni previsioni orarie (5 giorni, ogni 3 ore)
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=it`;
+    const forecastResponse = await axios.get(forecastUrl);
+    
+    // Prendi i dati base (ogni 3 ore)
+    const baseForecast = forecastResponse.data.list.slice(0, 16).map(item => ({
+      time: new Date(item.dt * 1000).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+      timestamp: item.dt * 1000,
+      temperature: Math.round(item.main.temp),
+      tempMin: Math.round(item.main.temp_min),
+      tempMax: Math.round(item.main.temp_max),
+      description: item.weather[0].description,
+      icon: item.weather[0].icon,
+      windSpeed: item.wind.speed,
+      humidity: item.main.humidity,
+      pressure: item.main.pressure,
+      clouds: item.clouds.all
+    }));
+
+    // Interpola i dati per avere intervalli di 1 ora
+    const hourlyForecast = [];
+    for (let i = 0; i < baseForecast.length - 1; i++) {
+      const current = baseForecast[i];
+      const next = baseForecast[i + 1];
+      
+      // Aggiungi il punto corrente
+      hourlyForecast.push(current);
+      
+      // Interpola 2 punti intermedi (1 ora e 2 ore dopo)
+      for (let j = 1; j <= 2; j++) {
+        const ratio = j / 3;
+        const interpolatedTime = current.timestamp + (next.timestamp - current.timestamp) * ratio;
+        
+        hourlyForecast.push({
+          time: new Date(interpolatedTime).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+          timestamp: interpolatedTime,
+          temperature: Math.round(current.temperature + (next.temperature - current.temperature) * ratio),
+          tempMin: Math.round(current.tempMin + (next.tempMin - current.tempMin) * ratio),
+          tempMax: Math.round(current.tempMax + (next.tempMax - current.tempMax) * ratio),
+          description: current.description, // Mantieni la descrizione del punto base
+          icon: current.icon,
+          windSpeed: current.windSpeed + (next.windSpeed - current.windSpeed) * ratio,
+          humidity: Math.round(current.humidity + (next.humidity - current.humidity) * ratio),
+          pressure: Math.round(current.pressure + (next.pressure - current.pressure) * ratio),
+          clouds: Math.round(current.clouds + (next.clouds - current.clouds) * ratio),
+          interpolated: true // Flag per indicare che è un dato interpolato
+        });
+      }
+    }
+    
+    // Aggiungi l'ultimo punto
+    hourlyForecast.push(baseForecast[baseForecast.length - 1]);
 
     // Determina se c'è un'allerta meteo basata sulle preferenze utente
     const hasAlert = checkWeatherAlert(data, userPreferences);
@@ -94,6 +148,7 @@ async function getWeatherData(city, userPreferences = null) {
       clouds: data.clouds.all,
       hasAlert,
       alertMessage: hasAlert ? getAlertMessage(data, userPreferences) : null,
+      hourlyForecast,
       timestamp: new Date().toISOString()
     };
   } catch (error) {
@@ -178,6 +233,11 @@ function getAlertMessage(data, userPreferences = null) {
 // Funzione per generare allerte di test
 function generateTestAlert(type, realData) {
   const testData = { ...realData };
+  
+  // Mantieni le previsioni orarie anche nei test
+  if (!testData.hourlyForecast) {
+    testData.hourlyForecast = [];
+  }
   
   switch (type) {
     case 'cold':
