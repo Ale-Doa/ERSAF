@@ -12,68 +12,68 @@ const WeatherCard = ({ weather }) => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-xl p-8 text-white">
+    <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-xl p-4 sm:p-6 md:p-8 text-white">
       {/* Allerta Meteo */}
       {weather.hasAlert && (
-        <div className="mb-6 bg-red-500 bg-opacity-90 rounded-lg p-4 flex items-start space-x-3">
-          <AlertTriangle className="h-6 w-6 flex-shrink-0 mt-0.5" />
+        <div className="mb-4 sm:mb-6 bg-red-500 bg-opacity-90 rounded-lg p-3 sm:p-4 flex items-start space-x-2 sm:space-x-3">
+          <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-bold text-lg mb-1">Allerta Meteo</h3>
-            <p className="text-sm">{weather.alertMessage}</p>
+            <h3 className="font-bold text-base sm:text-lg mb-1">Allerta Meteo</h3>
+            <p className="text-xs sm:text-sm">{weather.alertMessage}</p>
           </div>
         </div>
       )}
 
       {/* Città e Temperatura */}
-      <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold mb-2">
+      <div className="text-center mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">
           {weather.city}, {weather.country}
         </h2>
-        <div className="flex items-center justify-center space-x-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
           <img
             src={`https://openweathermap.org/img/wn/${weather.icon}@4x.png`}
             alt={weather.description}
-            className="w-32 h-32"
+            className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32"
           />
           <div>
-            <div className="text-6xl font-bold">{weather.temperature}°C</div>
-            <p className="text-xl capitalize mt-2">{weather.description}</p>
+            <div className="text-4xl sm:text-5xl md:text-6xl font-bold">{weather.temperature}°C</div>
+            <p className="text-base sm:text-lg md:text-xl capitalize mt-1 sm:mt-2">{weather.description}</p>
           </div>
         </div>
       </div>
 
       {/* Dettagli Meteo */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-        <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-          <div className="flex justify-center mb-2">
-            <Gauge className="h-6 w-6" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-6 md:mt-8">
+        <div className="bg-white bg-opacity-20 rounded-lg p-3 sm:p-4 text-center">
+          <div className="flex justify-center mb-1 sm:mb-2">
+            <Gauge className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <p className="text-sm opacity-90">Percepitazioni</p>
-          <p className="text-2xl font-bold">{weather.feelsLike}°C</p>
+          <p className="text-xs sm:text-sm opacity-90">Percepitazioni</p>
+          <p className="text-lg sm:text-xl md:text-2xl font-bold">{weather.feelsLike}°C</p>
         </div>
 
-        <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-          <div className="flex justify-center mb-2">
-            <Droplets className="h-6 w-6" />
+        <div className="bg-white bg-opacity-20 rounded-lg p-3 sm:p-4 text-center">
+          <div className="flex justify-center mb-1 sm:mb-2">
+            <Droplets className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <p className="text-sm opacity-90">Umidità</p>
-          <p className="text-2xl font-bold">{weather.humidity}%</p>
+          <p className="text-xs sm:text-sm opacity-90">Umidità</p>
+          <p className="text-lg sm:text-xl md:text-2xl font-bold">{weather.humidity}%</p>
         </div>
 
-        <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-          <div className="flex justify-center mb-2">
-            <Wind className="h-6 w-6" />
+        <div className="bg-white bg-opacity-20 rounded-lg p-3 sm:p-4 text-center">
+          <div className="flex justify-center mb-1 sm:mb-2">
+            <Wind className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <p className="text-sm opacity-90">Vento</p>
-          <p className="text-2xl font-bold">{weather.windSpeed} m/s</p>
+          <p className="text-xs sm:text-sm opacity-90">Vento</p>
+          <p className="text-lg sm:text-xl md:text-2xl font-bold">{weather.windSpeed} m/s</p>
         </div>
 
-        <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-          <div className="flex justify-center mb-2">
-            <Cloud className="h-6 w-6" />
+        <div className="bg-white bg-opacity-20 rounded-lg p-3 sm:p-4 text-center">
+          <div className="flex justify-center mb-1 sm:mb-2">
+            <Cloud className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <p className="text-sm opacity-90">Nuvolosità</p>
-          <p className="text-2xl font-bold">{weather.clouds}%</p>
+          <p className="text-xs sm:text-sm opacity-90">Nuvolosità</p>
+          <p className="text-lg sm:text-xl md:text-2xl font-bold">{weather.clouds}%</p>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ const WeatherCard = ({ weather }) => {
       )}
 
       {/* Timestamp */}
-      <div className="mt-6 text-center text-sm opacity-75">
+      <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm opacity-75">
         Ultimo aggiornamento: {new Date(weather.timestamp).toLocaleString('it-IT')}
       </div>
     </div>

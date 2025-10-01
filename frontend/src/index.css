@@ -9,6 +9,21 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Migliora il touch su mobile */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  touch-action: manipulation;
+}
+
+/* Migliora lo scrolling su mobile */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Previeni il zoom su input focus (iOS) */
+@media screen and (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
 }
 
 code {

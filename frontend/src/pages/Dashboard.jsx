@@ -53,14 +53,14 @@ const Dashboard = () => {
     <div className="min-h-screen">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
                 Benvenuto, {user?.nome}!
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
                 Ecco il meteo attuale per {user?.luogoResidenza}
               </p>
             </div>
@@ -68,16 +68,16 @@ const Dashboard = () => {
             <button
               onClick={fetchWeather}
               disabled={loading}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto justify-center"
             >
-              <RefreshCw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 ${loading ? 'animate-spin' : ''}`} />
               <span>Aggiorna</span>
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mb-4 sm:mb-6 bg-red-50 border border-red-200 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base">
             {error}
           </div>
         )}
@@ -91,30 +91,30 @@ const Dashboard = () => {
         )}
 
         {/* Informazioni aggiuntive */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+        <div className="mt-4 sm:mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">
               Aggiornamenti Automatici
             </h3>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs sm:text-sm">
               I dati meteo vengono aggiornati automaticamente ogni 5 minuti per garantirti informazioni sempre aggiornate.
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">
               Notifiche Allerta
             </h3>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs sm:text-sm">
               Riceverai notifiche in tempo reale in caso di condizioni meteo pericolose nella tua zona.
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">
               Dati Affidabili
             </h3>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs sm:text-sm">
               Utilizziamo OpenWeatherMap per fornirti previsioni meteo accurate e affidabili.
             </p>
           </div>
